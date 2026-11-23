@@ -2,6 +2,9 @@
 containers:
   - name: BASH
     path: bash_latest.sif
+  - name: tidyverse
+    path: rstudio_4.4.2.sif
+    source: docker://rocker/tidyverse:4.4.2
 requirements:
   walltime: 0-8
   memory: 16G
@@ -10,13 +13,27 @@ inputs:
     subjects:
       sessions:
         - assessors:
-          - types: DunedinPACNI_v1
+          - types: FS7_v1
             resources:
-              - resource: DATA
-command:
+              - resource: SUBJ
+                fmatch: stats/aseg.stats,stats/lh.aparc.stats,stats/rh.aparc.stats,stats/lh.w-g.pct.stats,stats/rh.w-g.pct.stats
+pre:
   type: singularity_exec
   container: BASH
   args: >-
     bash -c "set -x;
-      cp -r /INPUTS/* /OUTPUTS/
+    ls -ltrR /INPUTS
+    mkdir -p /OUTPUTS/SUBJECTS
+    cp -r /INPUTS/*/* /OUTPUTS/
+    echo ID > /OUTPUTS/sublist.csv
+    ls /OUTPUTS/SUBJECTS >> /OUTPUTS/sublist.csv
+    mkdir /OUTPUTS/LIBS
     "
+command:
+  type: singularity_exec
+  container: tidyverse
+  args: >-
+    Rscript -e "devtools::install_github('etw11/DunedinPACNI', lib='/OUTPUTS/LIBS');
+    library(DunedinPACNI, lib.loc='/OUTPUTS/LIBS');
+    df <- LoadFreeSurferStats(fsdir='/OUTPUTS/SUBJECTS', sublist='/OUTPUTS/sublist.csv');
+    ExportDunedinPACNI(data=df, outdir='/OUTPUTS');"
