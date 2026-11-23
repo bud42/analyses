@@ -1,0 +1,22 @@
+---
+containers:
+  - name: BASH
+    path: bash_latest.sif
+requirements:
+  walltime: 0-8
+  memory: 16G
+inputs:
+  xnat:
+    subjects:
+      sessions:
+        - assessors:
+          - types: DunedinPACNI_v1
+            resources:
+              - resource: DATA
+command:
+  type: singularity_exec
+  container: BASH
+  args: >-
+    bash -c "set -x;
+      cp -r /INPUTS/* /OUTPUTS/
+    "

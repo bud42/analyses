@@ -1,0 +1,28 @@
+---
+containers:
+  - name: BASH
+    path: bash_latest.sif
+requirements:
+  walltime: 0-8
+  memory: 16G
+inputs:
+  xnat:
+    subjects:
+      sessions:
+        - assessors:
+          - types: fmri_msit_denoise_v1
+            resources:
+              - resource: PREPROC
+command:
+  type: singularity_exec
+  container: BASH
+  args: >-
+    bash -c "set -x;
+    mkdir /OUTPUTS/MSIT-Baseline;
+    mkdir /OUTPUTS/MSIT-Month08;
+    mkdir /OUTPUTS/MSIT-Month16;
+    mkdir /OUTPUTS/MSIT-Month24;
+    cp -r /INPUTS/*/*/*/*-x-*a-x-* /OUTPUTS/MSIT-Baseline;
+    cp -r /INPUTS/*/*/*/*-x-*b-x-* /OUTPUTS/MSIT-Month08;
+    cp -r /INPUTS/*/*/*/*-x-*c-x-* /OUTPUTS/MSIT-Month16;
+    cp -r /INPUTS/*/*/*/*-x-*d-x-* /OUTPUTS/MSIT-Month24;"

@@ -1,0 +1,28 @@
+---
+containers:
+  - name: BASH
+    path: bash_latest.sif
+requirements:
+  walltime: 0-8
+  memory: 16G
+inputs:
+  xnat:
+    subjects:
+      sessions:
+        - assessors:
+          - types: fmri_rest_denoise_v1
+            resources:
+              - resource: PREPROC
+command:
+  type: singularity_exec
+  container: BASH
+  args: >-
+    bash -c "set -x;
+    mkdir /OUTPUTS/REST-Baseline;
+    mkdir /OUTPUTS/REST-Month08;
+    mkdir /OUTPUTS/REST-Month16;
+    mkdir /OUTPUTS/REST-Month24;
+    cp -r /INPUTS/*/*/*/*-x-*a-x-* /OUTPUTS/REST-Baseline/;
+    cp -r /INPUTS/*/*/*/*-x-*b-x-* /OUTPUTS/REST-Month08/;
+    cp -r /INPUTS/*/*/*/*-x-*c-x-* /OUTPUTS/REST-Month16/;
+    cp -r /INPUTS/*/*/*/*-x-*d-x-* /OUTPUTS/REST-Month24/;"
