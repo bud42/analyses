@@ -3,7 +3,7 @@ containers:
   - name: BASH
     path: bash_latest.sif
   - name: tidyverse
-    path: rstudio_4.4.2.sif
+    path: tidyverse_4.4.2.sif
     source: docker://rocker/tidyverse:4.4.2
 requirements:
   walltime: 0-8
@@ -23,10 +23,8 @@ pre:
   type: singularity_exec
   container: BASH
   args: >-
-    bash -c "set -x;
-    ls -ltrR /INPUTS;
-    mkdir -p /OUTPUTS/SUBJECTS;
-    cp -r /INPUTS/*/* /OUTPUTS/;
+    bash -c "mkdir -p /OUTPUTS/SUBJECTS;
+    cp -r /INPUTS/*/*/assessors/* /OUTPUTS/SUBJECTS;
     echo ID > /OUTPUTS/sublist.csv;
     ls /OUTPUTS/SUBJECTS >> /OUTPUTS/sublist.csv;
     mkdir /OUTPUTS/LIBS;
